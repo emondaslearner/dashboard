@@ -71,6 +71,7 @@ class Analytics {
         topic: req.query.topic,
         sector: req.query.sector,
         country: req.query.country,
+        pestle: req.query.pestle,
       };
 
       const data = await analyticsLib.getRelevanceIntensityLikelihood(filter);

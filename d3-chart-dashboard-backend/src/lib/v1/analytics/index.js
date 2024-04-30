@@ -21,9 +21,8 @@ class Analytics {
   }
 
   async getRelevanceIntensityLikelihood(filter) {
-    const { end_year, source, region, topic, sector, country } = filter;
+    const { end_year, source, region, topic, sector, country, pestle } = filter;
     const query = {};
-
 
     if (end_year) query.end_year = end_year;
     if (source) query.source = source;
@@ -31,6 +30,7 @@ class Analytics {
     if (topic) query.topic = topic;
     if (sector) query.sector = sector;
     if (country) query.country = country;
+    if (pestle) query.pestle = pestle;
 
     // query length
     const filterKeys = Object.keys(query);
@@ -61,6 +61,8 @@ class Analytics {
     const region_filter_values = [];
     const topic_filter_values = [];
     const sector_filter_values = [];
+    const country_filter_values = [];
+    const pestle_filter_values = [];
 
     // mixing the topic
     for (let i = 0; i < data.length; i++) {
@@ -117,6 +119,26 @@ class Analytics {
         }
       }
 
+      // country filter values
+      if (singleData.country) {
+        const element = await country_filter_values.find(
+          (item) => item === singleData.country
+        );
+        if (!element) {
+          country_filter_values.push(singleData.country);
+        }
+      }
+
+      // country filter values
+      if (singleData.pestle) {
+        const element = await pestle_filter_values.find(
+          (item) => item === singleData.pestle
+        );
+        if (!element) {
+          pestle_filter_values.push(singleData.pestle);
+        }
+      }
+
       // if topic is already exist in category the plus the relevance, likelihood and intensity otherwise push those in data
       if (singleData.topic) {
         // checking topic already exist or not in category
@@ -154,6 +176,8 @@ class Analytics {
             regions: region_filter_values,
             topics: topic_filter_values,
             sectors: sector_filter_values,
+            countries: country_filter_values,
+            pestles: pestle_filter_values,
           }
         : null,
     };
