@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { useQuery } from "react-query";
 import { barChartApi } from "../../../apis/chart";
-import PageLoader from "../Loader/PageLoader";
-import Button from "../../ui/Button";
-import Filter from "../Filter";
-import { error } from "../../../utils/alert";
+import PageLoader from "../../../components/shared/Loader/PageLoader";
+import Button from "../../../components/ui/Button";
+import Filter from "../../../components/shared/Filter";
+import { error as errorAlert } from "../../../utils/alert";
 
 const BarChart = () => {
   const [filter, setFilter] = useState({
@@ -15,6 +15,7 @@ const BarChart = () => {
     topic: "",
     sector: "",
     country: "",
+    pestle: "",
   });
 
   const [endYears, setEndYears] = useState([]);
@@ -22,6 +23,8 @@ const BarChart = () => {
   const [topics, setTopics] = useState([]);
   const [regions, setRegions] = useState([]);
   const [sectors, setSectors] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [pestles, setPestles] = useState([]);
 
   const { data, isLoading, refetch, error } = useQuery({
     queryFn: () => barChartApi(filter),
@@ -43,6 +46,8 @@ const BarChart = () => {
       setTopics(data.data.filter.topics);
       setRegions(data.data.filter.regions);
       setSectors(data.data.filter.sectors);
+      setCountries(data.data.filter.countries);
+      setPestles(data.data.filter.pestles);
     }
   }, [data]);
 
@@ -99,6 +104,7 @@ const BarChart = () => {
             data={endYears}
             buttonText={"End Year"}
             setSelected={(data) => setFilter({ ...filter, end_year: data })}
+            selectedData={filter.end_year}
             itemsClass={"mx-auto"}
           />
 
@@ -110,6 +116,7 @@ const BarChart = () => {
             className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
             itemsClass={"!px-[10px]"}
             search={true}
+            selectedData={filter.topic}
           />
 
           {/* regions year filter */}
@@ -120,6 +127,7 @@ const BarChart = () => {
             className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
             itemsClass={"!px-[12px]"}
             search={true}
+            selectedData={filter.region}
           />
 
           {/* sources year filter */}
@@ -130,9 +138,32 @@ const BarChart = () => {
             className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
             itemsClass={"!px-[10px]"}
             search={true}
+            selectedData={filter.source}
           />
 
-          {/* sources year filter */}
+          {/* countries year filter */}
+          <Filter
+            data={countries}
+            buttonText={"Countries"}
+            setSelected={(data) => setFilter({ ...filter, country: data })}
+            className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
+            itemsClass={"!px-[10px]"}
+            search={true}
+            selectedData={filter.country}
+          />
+
+          {/* Pestles year filter */}
+          <Filter
+            data={pestles}
+            buttonText={"Pestles"}
+            setSelected={(data) => setFilter({ ...filter, pestle: data })}
+            className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
+            itemsClass={"!px-[10px]"}
+            search={true}
+            selectedData={filter.pestle}
+          />
+
+          {/* sectors year filter */}
           <Filter
             data={sectors}
             buttonText={"Sectors"}
@@ -140,6 +171,7 @@ const BarChart = () => {
             className={"max-h-[350px] min-w-[350px] overflow-y-auto"}
             itemsClass={"!px-[10px]"}
             search={true}
+            selectedData={filter.sector}
           />
 
           <Button
@@ -150,7 +182,8 @@ const BarChart = () => {
                 filter.source ||
                 filter.region ||
                 filter.topic ||
-                filter.sector
+                filter.sector ||
+                filter.pestle 
               ) {
                 refetch();
                 setFilter({
@@ -160,9 +193,10 @@ const BarChart = () => {
                   topic: "",
                   sector: "",
                   country: "",
+                  pestle: "",
                 });
               } else {
-                error({
+                errorAlert({
                   message: "To proceed, please choose at least one filter.",
                 });
               }

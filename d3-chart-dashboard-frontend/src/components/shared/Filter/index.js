@@ -9,10 +9,15 @@ const Filter = ({
   itemsClass,
   className,
   search,
+  selectedData,
 }) => {
   const [selected, setSelectedData] = useState("");
   const [searchValue, setSearch] = useState("");
   const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    setSelectedData(selectedData);
+  }, [selectedData]);
 
   // set item
   useEffect(() => {
@@ -44,26 +49,32 @@ const Filter = ({
             label="Search"
             value={searchValue}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={'Search'}
+            placeholder={"Search"}
           />
         )}
         <div
           className={`max-w-[350px] flex items-center flex-wrap py-[20px] px-[10px] gap-[7px] ${className}`}
         >
-          {items.length !== 0 ? items.map((item, i) => (
-            <div
-              key={i}
-              className={`px-[20px] py-[5px] border-[2px] border-primary rounded-[3px] cursor-pointer text-primary hover:text-white hover:bg-primary bg-transparent transition-all duration-200 ${itemsClass} ${
-                selected === item && "!bg-primary text-white"
-              }`}
-              onClick={() => {
-                setSelectedData(item);
-                setSelected(item);
-              }}
-            >
-              {item}
-            </div>
-          )) : <p className="text-[18px] mx-auto block">There is no data to display</p>}
+          {items.length !== 0 ? (
+            items.map((item, i) => (
+              <div
+                key={i}
+                className={`px-[20px] py-[5px] border-[2px] border-primary rounded-[3px] cursor-pointer text-primary hover:text-white hover:bg-primary bg-transparent transition-all duration-200 ${itemsClass} ${
+                  selected === item && "!bg-primary text-white"
+                }`}
+                onClick={() => {
+                  setSelectedData(item);
+                  setSelected(item);
+                }}
+              >
+                {item}
+              </div>
+            ))
+          ) : (
+            <p className="text-[18px] mx-auto block">
+              There is no data to display
+            </p>
+          )}
         </div>
       </div>
     </Popover>

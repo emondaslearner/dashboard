@@ -64,6 +64,8 @@ class Analytics {
     const country_filter_values = [];
     const pestle_filter_values = [];
 
+    // total relevance, 
+
     // mixing the topic
     for (let i = 0; i < data.length; i++) {
       const singleData = data[i];

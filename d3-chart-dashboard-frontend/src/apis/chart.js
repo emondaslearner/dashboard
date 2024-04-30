@@ -7,7 +7,7 @@ import { error } from "../utils/alert";
 const barChartApi = (filter) => {
   return axios
     .get(
-      `/analytics?end_year=${filter.end_year}&source=${filter.source}&region=${filter.region}&topic=${filter.topic}&sector=${filter.sector}&country=${filter.country}`
+      `/analytics?end_year=${filter.end_year}&source=${filter.source}&region=${filter.region}&topic=${filter.topic}&sector=${filter.sector}&country=${filter.country}&pestle=${filter.pestle}`
     )
     .then((data) => {
       return data.data;
@@ -18,4 +18,18 @@ const barChartApi = (filter) => {
     });
 };
 
-export { barChartApi };
+const scatterChartApi = (filter) => {
+  return axios
+    .get(
+      `/analytics/scatter-chart?country=${filter.country}&end_year=${filter.end_year}`
+    )
+    .then((data) => {
+      return data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      error({ message: err.response.data.message });
+    });
+};
+
+export { barChartApi, scatterChartApi };
