@@ -52,7 +52,8 @@ class Analytics {
         insertSuccessfully: payloadData.length,
         self: req.url,
         links: {
-          get: "/analytics",
+          analytics: "/analytics",
+          scatterChart: "/analytics/scatter-chart",
         },
       };
 
@@ -83,6 +84,34 @@ class Analytics {
         data,
         self: req.url,
         links: {
+          post: "/analytics",
+          scatterChart: "/analytics/scatter-chart",
+        },
+      };
+
+      res.status(200).json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getScatterChartDetails(req, res, next) {
+    try {
+      const filter = {
+        country: req.query.country,
+        end_year: req.query.end_year,
+      };
+
+      const data = await analyticsLib.getScatterChartDetails(filter);
+
+      const response = {
+        code: 200,
+        status: "success",
+        message: "Successfully fetched data",
+        data,
+        self: req.url,
+        links: {
+          get: "/analytics",
           post: "/analytics",
         },
       };

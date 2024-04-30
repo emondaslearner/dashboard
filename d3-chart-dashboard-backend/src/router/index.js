@@ -20,4 +20,6 @@ router
   .post(upload.array("file", 1), analytics.insertAnalyticsData)
   .get(analytics.getRelevanceIntensityLikelihood);
 
+router.get("/api/v1/analytics/scatter-chart", analytics.getScatterChartDetails);
+
 module.exports = router;

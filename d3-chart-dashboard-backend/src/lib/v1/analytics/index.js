@@ -129,7 +129,7 @@ class Analytics {
         }
       }
 
-      // country filter values
+      // pestle filter values
       if (singleData.pestle) {
         const element = await pestle_filter_values.find(
           (item) => item === singleData.pestle
@@ -180,6 +180,84 @@ class Analytics {
             pestles: pestle_filter_values,
           }
         : null,
+    };
+  }
+
+  async getScatterChartDetails(filter) {
+    const { country, end_year } = filter;
+
+    const query = {};
+
+    if (country) query.country = country;
+    if (end_year) query.end_year = end_year;
+
+    const filterKey = Object.keys(query);
+
+    const series = [];
+
+    // filter
+    const end_year_filter_values = [];
+    const country_filter_values = [];
+
+    const data = await this[_database].find(query);
+
+    for (let i = 0; i < data.length; i++) {
+      const singleData = data[i];
+
+      if (
+        singleData.country &&
+        singleData.relevance &&
+        singleData.end_year &&
+        singleData.region
+      ) {
+        // country filter values
+        if (singleData.country) {
+          const element = await country_filter_values.find(
+            (item) => item === singleData.country
+          );
+          if (!element) {
+            country_filter_values.push(singleData.country);
+          }
+        }
+
+        // end_year filter values
+        if (singleData.end_year) {
+          const element = await end_year_filter_values.find(
+            (item) => item === singleData.end_year
+          );
+          if (!element) {
+            end_year_filter_values.push(singleData.end_year);
+          }
+        }
+
+        const elementIndex = series.findIndex(
+          (item) => item.x === singleData.country
+        );
+        if (elementIndex === -1) {
+          // If no matching element is found, push a new object into the series array
+          series.push({
+            x: singleData.country,
+            y: singleData.relevance,
+            region: singleData.region,
+            year: singleData.end_year,
+          });
+        } else {
+          // If a matching element is found, update its properties
+          series[elementIndex].y =
+            series[elementIndex].y + singleData.relevance;
+        }
+      }
+    }
+
+    return {
+      series,
+      filter:
+        filterKey.length === 0
+          ? {
+              end_years: end_year_filter_values,
+              countries: country_filter_values,
+            }
+          : null,
     };
   }
 }
